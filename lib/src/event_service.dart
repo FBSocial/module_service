@@ -21,7 +21,7 @@ class EventGuildExited {
 class EventMessageInvalided {
   final String messageId;
   final String? operator;
-  final String? channelId;
+  final String channelId;
 
   const EventMessageInvalided(
     this.channelId,
@@ -41,12 +41,12 @@ class EventNonentityMessageSpawned<T> {
 
 class EventMessageRecalled extends EventMessageInvalided {
   const EventMessageRecalled(
-      String? channelId, String messageId, String? recalledBy)
+      String channelId, String messageId, String? recalledBy)
       : super(channelId, messageId, recalledBy);
 }
 
 class EventMessageDeleted extends EventMessageInvalided {
-  const EventMessageDeleted(String? channelId, String messageId)
+  const EventMessageDeleted(String channelId, String messageId)
       : super(channelId, messageId, null);
 }
 
