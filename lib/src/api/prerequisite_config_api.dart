@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:service/src/sp_service.dart';
+import 'package:lib_utils/sp_service.dart';
 
 part 'prerequisite_config_api.g.dart';
 
@@ -137,10 +137,10 @@ class PrerequisiteConfigApi {
         await client.postUrl(Uri.https(await _getHost(), '/api/common/alipay'));
     final resp = await request.close();
     final json = await resp.transform(utf8.decoder).join();
-    final result= AuditResp.fromJson(jsonDecode(json));
+    final result = AuditResp.fromJson(jsonDecode(json));
     if (result.status) {
       return result.data;
-    }else {
+    } else {
       throw Exception(result.desc);
     }
   }
