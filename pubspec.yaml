@@ -11,8 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   connectivity_plus: ^2.3.6+1
-  shared_preferences: ^2.0.15
   json_serializable: ^6.3.1
+
+  lib_utils:
+    path: ../../component/lib_utils
 
 dev_dependencies:
   flutter_test:
