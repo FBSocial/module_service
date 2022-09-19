@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lib_utils/sp_service.dart';
+import 'package:lib_utils/config/sp_service.dart';
 
 part 'prerequisite_config_api.g.dart';
 
