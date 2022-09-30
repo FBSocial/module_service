@@ -148,12 +148,12 @@ class PrerequisiteConfigApi {
   static Future<String> _getHost() async {
     // TODO 待 http 模块提供后，从 http 模块获取
     const _hosts = {
-      0: "a1-dev.fanbook.mobi", // 开发环境
-      1: "a1-test.fanbook.mobi", // 开发环境2
-      2: "a1-newtest.fanbook.mobi", // 测试环境
-      3: "a1-fat.fanbook.mobi", // 测试环境
-      4: "a1-pre.fanbook.mobi", // 预发布环境
-      5: "a1.fanbook.mobi", // 正式环境
+      0: "a1-dev.fanbook.mobi",
+      1: "a1-test.fanbook.mobi",
+      2: "a1-pre.fanbook.mobi",
+      3: "a1.fanbook.mobi",
+      4: "a1-fat.fanbook.mobi",
+      5: "a1-newtest.fanbook.mobi",
     };
     await SpService.instance.ensureInitialized();
     final env = SpService.instance.getInt(SP.networkEnvSharedKey);
