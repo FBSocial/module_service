@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
-
-import 'api/prerequisite_config_api.dart';
+import 'package:lib_net/lib_net.dart';
 
 class ServerSideConfiguration {
   static ServerSideConfiguration instance = ServerSideConfiguration._();
@@ -46,8 +45,7 @@ class ServerSideConfiguration {
   }
 
   Future<void> init() async {
-    try {
-      final config = await PrerequisiteConfigApi.doRequest();
+    final exception = await CommonApi.prerequisiteConfig(onSuccess: (config) {
       walletIsOpen = config.walletBean;
       payIsOpen = config.leBean;
 
@@ -71,8 +69,10 @@ class ServerSideConfiguration {
       readHistoryPermissionEnabled = config.readHistory ?? true;
 
       urlCheckEntity = config.urlCheckEntity ?? const UrlCheckEntity();
-    } catch (e) {
-      debugPrint("初始化服务端配置失败，将使用客户端默认配置。原因： $e");
+    });
+
+    if (exception != null) {
+      debugPrint("初始化服务端配置失败，将使用客户端默认配置。原因： $exception");
     }
   }
 }
