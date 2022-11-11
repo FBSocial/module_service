@@ -40,12 +40,17 @@ class ServerSideConfiguration {
 
   String officialOperationBotId = "398308634552958976";
 
+  late Future<Exception?> _requestFuture;
+
+  /// 使用此 Future 确保已经完成了最新配置的加载
+  Future<void> ensureRequestDone() => _requestFuture;
+
   ServerSideConfiguration._() {
     init();
   }
 
   Future<void> init() async {
-    final exception = await CommonApi.prerequisiteConfig(onSuccess: (config) {
+    _requestFuture = CommonApi.prerequisiteConfig(onSuccess: (config) {
       walletIsOpen = config.walletBean;
       payIsOpen = config.leBean;
 
@@ -71,6 +76,7 @@ class ServerSideConfiguration {
       urlCheckEntity = config.urlCheckEntity ?? const UrlCheckEntity();
     });
 
+    final exception = await _requestFuture;
     if (exception != null) {
       debugPrint("初始化服务端配置失败，将使用客户端默认配置。原因： $exception");
     }
