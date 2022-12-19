@@ -30,6 +30,13 @@ class EventMessageInvalided {
   );
 }
 
+class EventChannelFeatured {
+  final String guildId;
+  final String? channelId;
+
+  const EventChannelFeatured(this.guildId, this.channelId);
+}
+
 // IM 消息相关是事件
 /// IM 产生了一条非实体消息，参见 [MessageType.isNonentity]
 @immutable
@@ -102,5 +109,12 @@ class EventService<MessageType> {
           (channelId == null || e.channelId == channelId) &&
           (messageId == null || e.messageId == messageId))
     ]).cast<EventMessageInvalided>();
+  }
+
+  /// 精选频道
+  Stream<EventChannelFeatured> onChannelFeaturedChange(String guildId) {
+    return _stream.stream
+        .where((e) => e is EventChannelFeatured && e.guildId == guildId)
+        .cast<EventChannelFeatured>();
   }
 }
