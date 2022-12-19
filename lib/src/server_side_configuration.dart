@@ -36,7 +36,7 @@ class ServerSideConfiguration {
   bool disableExcelComment = false;
 
   /// 配置链接黑名单
-  UrlCheckEntity urlCheckEntity = const UrlCheckEntity();
+  UrlCheckEntity urlCheckEntity = UrlCheckEntity.defaultValue();
 
   String officialOperationBotId = "398308634552958976";
 
@@ -73,7 +73,7 @@ class ServerSideConfiguration {
 
       readHistoryPermissionEnabled = config.readHistory ?? true;
 
-      urlCheckEntity = config.urlCheckEntity ?? const UrlCheckEntity();
+      urlCheckEntity = config.urlCheckEntity ?? UrlCheckEntity.defaultValue();
     });
 
     final exception = await _requestFuture;
