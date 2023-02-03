@@ -3,6 +3,16 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 
+/// WS 连接上时触发
+class EventWsConnected {
+  const EventWsConnected();
+}
+
+/// WS 断开上时触发
+class EventWsDisconnected {
+  const EventWsDisconnected();
+}
+
 /// 退出指定频道时触发
 class EventChannelExited {
   final String? channelId;
@@ -81,6 +91,20 @@ class EventService<MessageType> {
         .map((event) => (event as EventNonentityMessageSpawned).message)
         .cast<MessageType>();
   }
+
+  Stream<EventWsConnected> onWsConnected() {
+    return _stream.stream
+        .where((e) => e is EventWsConnected)
+        .cast<EventWsConnected>();
+  }
+
+  Stream<EventWsDisconnected> onWsDisconnected() {
+    return _stream.stream
+        .where((e) => e is EventWsDisconnected)
+        .cast<EventWsDisconnected>();
+  }
+
+  // onWsDisconnected
 
   Stream<EventChannelExited> onChannelExited(String? channelId) {
     return _stream.stream
