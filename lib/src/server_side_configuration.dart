@@ -12,6 +12,10 @@ class ServerSideConfiguration {
   ///支付乐豆入口 是否打款, 默认关
   bool payIsOpen = false;
 
+  /// 第三方支付(微信支付宝)是否打开
+  /// 默认关 (1开启 0 关闭)
+  bool thirdPayIsOpen = false;
+
   /// 是否显示第三方登录入口
   //苹果登录 默认关
   ValueNotifier<bool> appleLoginOpen = ValueNotifier(false);
@@ -60,6 +64,7 @@ class ServerSideConfiguration {
 
       appleLoginOpen.value = config.appleLogin == 1;
       wechatLoginOpen.value = config.wechatLogin == 1;
+      thirdPayIsOpen = config.thirdPayIsOpen == 1;
 
       singleMaxMoney = config.redPack?.singleMaxMoney.toDouble() ?? 20000;
       maxNum = config.redPack?.maxNum ?? 2000;
