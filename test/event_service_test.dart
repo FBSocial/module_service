@@ -1,18 +1,12 @@
 @Timeout(Duration(seconds: 1))
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:service/service.dart';
 
 void main() {
   late EventService s;
-  StreamSubscription? subscription;
 
   setUp(() {
     s = EventService();
-  });
-  tearDown(() {
-    subscription?.cancel();
   });
 
   test("Listening for channel exiting", () {
