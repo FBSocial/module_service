@@ -10,8 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  connectivity_plus: ^2.3.6+1
-  json_serializable: ^6.3.1
+  connectivity_plus: ^3.0.4
+  json_serializable: ^6.6.1
 
   lib_utils:
     path: ../../component/lib_utils

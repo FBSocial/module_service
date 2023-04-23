@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'package:dio/dio.dart';
+
 import 'package:flutter/widgets.dart';
 import 'package:lib_net/lib_net.dart';
+import 'package:lib_utils/config/sp_service.dart';
+import 'package:lib_utils/loggers.dart';
 
 class ServerSideConfiguration {
   static ServerSideConfiguration instance = ServerSideConfiguration._();
@@ -32,13 +37,6 @@ class ServerSideConfiguration {
   int maxNum = 2000; // 拼手气红包最多分成这么多份
   int period = 24 * 60 * 60; // 默认的红包过期时间24小时，服务器配置，单位为秒
 
-  /// 腾讯文档参数
-  String? tcDocEnvId;
-  String? tcDocEnvName;
-
-  /// 临时字段，禁用excel批注，默认值为false
-  bool disableExcelComment = false;
-
   /// 配置链接黑名单
   UrlCheckEntity urlCheckEntity = UrlCheckEntity.defaultValue();
 
@@ -51,6 +49,37 @@ class ServerSideConfiguration {
 
   ServerSideConfiguration._() {
     init();
+  }
+
+  static Completer<CommonSettingsRes>? _settingsCompleter;
+  static CommonSettingsRes settings = CommonSettingsRes();
+
+  static Future<CommonSettingsRes> getSettings([fetchRemote = false]) {
+    if (!fetchRemote && _settingsCompleter != null) {
+      return _settingsCompleter!.future;
+    }
+
+    final options = RetryOptions(
+        retries: 100,
+        retryInterval: const Duration(seconds: 5),
+        retryEvaluator: (error) =>
+            error.type != DioErrorType.cancel &&
+            error.type != DioErrorType.response).toOptions();
+
+    _settingsCompleter = Completer();
+    CommonApi.getCommonSetting(
+      onSuccess: (_settings) {
+        _settingsCompleter!.complete(_settings);
+        settings = _settings;
+        SpService.instance.setInt(SP.videoMax, _settings.videoMax);
+      },
+      onFail: (code, message) {
+        logger.severe('getCommonSetting fail: $code $message');
+        _settingsCompleter!.completeError(Exception());
+      },
+      options: options,
+    );
+    return _settingsCompleter!.future;
   }
 
   Future<void> init() async {
