@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:dio/dio.dart';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:lib_net/lib_net.dart';
 import 'package:lib_utils/config/sp_service.dart';
 import 'package:lib_utils/loggers.dart';
@@ -32,6 +33,12 @@ class ServerSideConfiguration {
   bool serverEnableNotiInBg = true;
   int maxNotiCountInBg = 5;
   int currentNotiCountInBg = 0;
+
+  /// - 发现tab是否可见
+  RxBool isDiscoverTabVisible = false.obs;
+
+  /// - 发现页功能用户黑名单,如果有值，则为黑名单服务器，发现页展示黑名单服务器的圈子内容
+  ValueNotifier<String> inGuildBlack = ValueNotifier('');
 
   double singleMaxMoney = 20000; // 发送单个红包最大金额
   int maxNum = 2000; // 拼手气红包最多分成这么多份
@@ -72,6 +79,7 @@ class ServerSideConfiguration {
         _settingsCompleter!.complete(_settings);
         settings = _settings;
         SpService.instance.setInt(SP.videoMax, _settings.videoMax);
+        _saveDiscoverConfig(_settings);
       },
       onFail: (code, message) {
         logger.severe('getCommonSetting fail: $code $message');
@@ -83,6 +91,9 @@ class ServerSideConfiguration {
   }
 
   Future<void> init() async {
+    // 获取本地的发现页显示配置和黑名单
+    _getDiscoverConfig();
+
     _requestFuture = CommonApi.prerequisiteConfig(onSuccess: (config) {
       walletIsOpen = config.walletBean;
       payIsOpen = config.leBean;
@@ -114,5 +125,21 @@ class ServerSideConfiguration {
     if (exception != null) {
       debugPrint("初始化服务端配置失败，将使用客户端默认配置。原因： $exception");
     }
+  }
+
+  /// - 保存发现页的配置
+  static void _saveDiscoverConfig(CommonSettingsRes _settings) {
+    instance.isDiscoverTabVisible.value = _settings.isDiscoverTabVisible;
+    instance.inGuildBlack.value = _settings.inGuildBlack;
+    SpService.instance
+        .setBool(SP.isDiscoverTabVisible, _settings.isDiscoverTabVisible);
+    SpService.instance.setString(SP.inGuildBlack, _settings.inGuildBlack);
+  }
+
+  /// - 获取本地的发现页显示配置和黑名单
+  void _getDiscoverConfig() {
+    isDiscoverTabVisible.value =
+        SpService.instance.getBool(SP.isDiscoverTabVisible) ?? false;
+    inGuildBlack.value = SpService.instance.getString(SP.inGuildBlack) ?? '';
   }
 }
