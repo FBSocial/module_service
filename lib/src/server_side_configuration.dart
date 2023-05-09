@@ -38,7 +38,7 @@ class ServerSideConfiguration {
   RxBool isDiscoverTabVisible = false.obs;
 
   /// - 发现页功能用户黑名单,如果有值，则为黑名单服务器，发现页展示黑名单服务器的圈子内容
-  ValueNotifier<String> inGuildBlack = ValueNotifier('');
+  RxString inGuildBlack = ''.obs;
 
   double singleMaxMoney = 20000; // 发送单个红包最大金额
   int maxNum = 2000; // 拼手气红包最多分成这么多份
@@ -136,10 +136,10 @@ class ServerSideConfiguration {
     SpService.instance.setString(SP.inGuildBlack, _settings.inGuildBlack);
   }
 
-  /// - 获取本地的发现页显示配置和黑名单
+  /// - todo: 写死的测试数据  获取本地的发现页显示配置和黑名单
   void _getDiscoverConfig() {
     isDiscoverTabVisible.value =
-        SpService.instance.getBool(SP.isDiscoverTabVisible) ?? false;
+        SpService.instance.getBool(SP.isDiscoverTabVisible) ?? true;
     inGuildBlack.value = SpService.instance.getString(SP.inGuildBlack) ?? '';
   }
 }
