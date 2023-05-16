@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 import 'package:lib_net/lib_net.dart';
 import 'package:lib_utils/config/sp_service.dart';
 import 'package:lib_utils/loggers.dart';
@@ -33,12 +32,6 @@ class ServerSideConfiguration {
   bool serverEnableNotiInBg = true;
   int maxNotiCountInBg = 5;
   int currentNotiCountInBg = 0;
-
-  /// - 发现tab是否可见
-  RxBool isDiscoverTabVisible = false.obs;
-
-  /// - 发现页功能用户黑名单,如果有值，则为黑名单服务器，发现页展示黑名单服务器的圈子内容
-  RxString inGuildBlack = ''.obs;
 
   double singleMaxMoney = 20000; // 发送单个红包最大金额
   int maxNum = 2000; // 拼手气红包最多分成这么多份
@@ -90,9 +83,6 @@ class ServerSideConfiguration {
   }
 
   Future<void> init() async {
-    // 获取本地的发现页显示配置和黑名单
-    _getDiscoverConfig();
-
     _requestFuture = CommonApi.prerequisiteConfig(onSuccess: (config) {
       walletIsOpen = config.walletBean;
       payIsOpen = config.leBean;
@@ -124,37 +114,5 @@ class ServerSideConfiguration {
     if (exception != null) {
       debugPrint("初始化服务端配置失败，将使用客户端默认配置。原因： $exception");
     }
-  }
-
-  /// - 写死的测试数据  获取本地的发现页显示配置和黑名单
-  void _getDiscoverConfig() {
-    isDiscoverTabVisible.value =
-        SpService.instance.getBool(SP.isDiscoverTabVisible) ?? true;
-    inGuildBlack.value = SpService.instance.getString(SP.inGuildBlack) ?? '';
-    // inGuildBlack.value =
-    //     SpService.instance.getString(SP.inGuildBlack) ?? '165402542119849984';
-
-    CommonApi.getPersonalCommonSetting(onSuccess: (_settings) {
-      // 0不出现 1出现
-      instance.isDiscoverTabVisible.value =
-          (_settings['feed_button'] as int? ?? 0) == 1;
-      // 没有命中黑名单逻辑或者是虽然命中但是同时在白名单中为0，否则为服务器id信息
-      instance.inGuildBlack.value =
-          (_settings['guild_id'] as int? ?? 0).toString();
-
-      _savePersonalSetting();
-    });
-  }
-
-  /// - 更新保存到本地存储
-  void _savePersonalSetting() {
-    SpService.instance.setBool(
-      SP.isDiscoverTabVisible,
-      instance.isDiscoverTabVisible.value,
-    );
-    SpService.instance.setString(
-      SP.inGuildBlack,
-      instance.inGuildBlack.value,
-    );
   }
 }
