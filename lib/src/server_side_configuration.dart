@@ -79,7 +79,6 @@ class ServerSideConfiguration {
         _settingsCompleter!.complete(_settings);
         settings = _settings;
         SpService.instance.setInt(SP.videoMax, _settings.videoMax);
-        _saveDiscoverConfig(_settings);
       },
       onFail: (code, message) {
         logger.severe('getCommonSetting fail: $code $message');
@@ -127,19 +126,35 @@ class ServerSideConfiguration {
     }
   }
 
-  /// - 保存发现页的配置
-  static void _saveDiscoverConfig(CommonSettingsRes _settings) {
-    instance.isDiscoverTabVisible.value = _settings.isDiscoverTabVisible;
-    instance.inGuildBlack.value = _settings.inGuildBlack;
-    SpService.instance
-        .setBool(SP.isDiscoverTabVisible, _settings.isDiscoverTabVisible);
-    SpService.instance.setString(SP.inGuildBlack, _settings.inGuildBlack);
-  }
-
-  /// - todo: 写死的测试数据  获取本地的发现页显示配置和黑名单
+  /// - 写死的测试数据  获取本地的发现页显示配置和黑名单
   void _getDiscoverConfig() {
     isDiscoverTabVisible.value =
         SpService.instance.getBool(SP.isDiscoverTabVisible) ?? true;
     inGuildBlack.value = SpService.instance.getString(SP.inGuildBlack) ?? '';
+    // inGuildBlack.value =
+    //     SpService.instance.getString(SP.inGuildBlack) ?? '165402542119849984';
+
+    CommonApi.getPersonalCommonSetting(onSuccess: (_settings) {
+      // 0不出现 1出现
+      instance.isDiscoverTabVisible.value =
+          (_settings['feed_button'] as int? ?? 0) == 1;
+      // 没有命中黑名单逻辑或者是虽然命中但是同时在白名单中为0，否则为服务器id信息
+      instance.inGuildBlack.value =
+          (_settings['guild_id'] as int? ?? 0).toString();
+
+      _savePersonalSetting();
+    });
+  }
+
+  /// - 更新保存到本地存储
+  void _savePersonalSetting() {
+    SpService.instance.setBool(
+      SP.isDiscoverTabVisible,
+      instance.isDiscoverTabVisible.value,
+    );
+    SpService.instance.setString(
+      SP.inGuildBlack,
+      instance.inGuildBlack.value,
+    );
   }
 }
