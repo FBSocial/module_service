@@ -34,6 +34,10 @@ class ServerSideConfiguration {
   int maxNotiCountInBg = 5;
   int currentNotiCountInBg = 0;
 
+  /// -none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
+  /// - 注：guild_id逻辑的优先级高于abtest，如果guild_id不等于0，那么abtest会返回空字符串
+  String abtestString = '';
+
   /// - 发现tab是否可见
   RxBool isDiscoverTabVisible = false.obs;
 
@@ -131,17 +135,23 @@ class ServerSideConfiguration {
     isDiscoverTabVisible.value =
         SpService.instance.getBool(SP.isDiscoverTabVisible) ?? true;
     inGuildBlack.value = SpService.instance.getString(SP.inGuildBlack) ?? '';
+    // todo: 临时数据
     // inGuildBlack.value =
     //     SpService.instance.getString(SP.inGuildBlack) ?? '165402542119849984';
 
     CommonApi.getPersonalCommonSetting(onSuccess: (_settings) {
-      // 0不出现 1出现
-      instance.isDiscoverTabVisible.value =
-          (_settings['feed_button'] as int? ?? 0) == 1;
+      final int inGuildBlackGuildId = _settings['guild_id'] as int? ?? 0;
+      // abtest的字符串
+      instance.abtestString = _settings['abtest'] ?? 'none';
       // 没有命中黑名单逻辑或者是虽然命中但是同时在白名单中为0，否则为服务器id信息
       instance.inGuildBlack.value =
-          (_settings['guild_id'] as int? ?? 0).toString();
+          inGuildBlackGuildId != 0 ? inGuildBlackGuildId.toString() : '';
 
+      // 显不显示发现页入口
+      //  none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
+      //  注：guild_id逻辑的优先级高于abtest，如果guild_id不等于0，那么abtest会返回空字符串
+      instance.isDiscoverTabVisible.value =
+          !(instance.inGuildBlack.value.isEmpty && abtestString == 'none');
       _savePersonalSetting();
     });
   }
