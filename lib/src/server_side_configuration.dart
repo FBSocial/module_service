@@ -35,8 +35,8 @@ class ServerSideConfiguration {
   int currentNotiCountInBg = 0;
 
   /// -none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
-  /// - 注：guild_id逻辑的优先级高于abtest，如果guild_id不等于0，那么abtest会返回空字符串
-  String abtestString = '';
+  /// - 注：guild_id逻辑的优先级高于abtestBucketName，如果guild_id不等于0，那么abtestBucketName会返回空字符串
+  String abtestBucketName = 'normal';
 
   /// - 发现tab是否可见
   RxBool isDiscoverTabVisible = false.obs;
@@ -138,33 +138,29 @@ class ServerSideConfiguration {
     // todo: 临时数据
     // inGuildBlack.value =
     //     SpService.instance.getString(SP.inGuildBlack) ?? '165402542119849984';
+  }
 
+  /// - 更新保存到本地存储
+  void getPersonalSetting() {
     CommonApi.getPersonalCommonSetting(onSuccess: (_settings) {
       final int inGuildBlackGuildId = _settings['guild_id'] as int? ?? 0;
       // abtest的字符串
-      instance.abtestString = _settings['abtest'] ?? 'none';
+      instance.abtestBucketName = _settings['bucket_name'] ?? 'none';
       // 没有命中黑名单逻辑或者是虽然命中但是同时在白名单中为0，否则为服务器id信息
       instance.inGuildBlack.value =
           inGuildBlackGuildId != 0 ? inGuildBlackGuildId.toString() : '';
 
       // 显不显示发现页入口
       //  none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
-      //  注：guild_id逻辑的优先级高于abtest，如果guild_id不等于0，那么abtest会返回空字符串
+      //  注：guild_id逻辑的优先级高于abtestBucketName，如果guild_id不等于0，那么abtestBucketName会返回空字符串
       instance.isDiscoverTabVisible.value =
-          !(instance.inGuildBlack.value.isEmpty && abtestString == 'none');
-      _savePersonalSetting();
-    });
-  }
+          !(instance.inGuildBlack.value.isEmpty && abtestBucketName == 'none');
 
-  /// - 更新保存到本地存储
-  void _savePersonalSetting() {
-    SpService.instance.setBool(
-      SP.isDiscoverTabVisible,
-      instance.isDiscoverTabVisible.value,
-    );
-    SpService.instance.setString(
-      SP.inGuildBlack,
-      instance.inGuildBlack.value,
-    );
+      // 更新本地数据
+      SpService.instance.setBool(
+          SP.isDiscoverTabVisible, instance.isDiscoverTabVisible.value);
+      SpService.instance
+          .setString(SP.inGuildBlack, instance.inGuildBlack.value);
+    });
   }
 }
