@@ -145,22 +145,21 @@ class ServerSideConfiguration {
     CommonApi.getPersonalCommonSetting(onSuccess: (_settings) {
       final int inGuildBlackGuildId = _settings['guild_id'] as int? ?? 0;
       // abtest的字符串
-      instance.abtestBucketName = _settings['bucket_name'] ?? 'none';
+      abtestBucketName = _settings['bucket_name'] ?? 'none';
       // 没有命中黑名单逻辑或者是虽然命中但是同时在白名单中为0，否则为服务器id信息
-      instance.inGuildBlack.value =
+      inGuildBlack.value =
           inGuildBlackGuildId != 0 ? inGuildBlackGuildId.toString() : '';
 
       // 显不显示发现页入口
       //  none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
       //  注：guild_id逻辑的优先级高于abtestBucketName，如果guild_id不等于0，那么abtestBucketName会返回空字符串
-      instance.isDiscoverTabVisible.value =
-          !(instance.inGuildBlack.value.isEmpty && abtestBucketName == 'none');
+      isDiscoverTabVisible.value =
+          !(inGuildBlack.value.isEmpty && abtestBucketName == 'none');
 
       // 更新本地数据
-      SpService.instance.setBool(
-          SP.isDiscoverTabVisible, instance.isDiscoverTabVisible.value);
       SpService.instance
-          .setString(SP.inGuildBlack, instance.inGuildBlack.value);
+          .setBool(SP.isDiscoverTabVisible, isDiscoverTabVisible.value);
+      SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
     });
   }
 }
