@@ -135,9 +135,6 @@ class ServerSideConfiguration {
     isDiscoverTabVisible.value =
         SpService.instance.getBool(SP.isDiscoverTabVisible) ?? true;
     inGuildBlack.value = SpService.instance.getString(SP.inGuildBlack) ?? '';
-    // todo: 临时数据
-    // inGuildBlack.value =
-    //     SpService.instance.getString(SP.inGuildBlack) ?? '165402542119849984';
   }
 
   /// - 更新保存到本地存储
