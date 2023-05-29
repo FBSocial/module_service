@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:lib_net/lib_net.dart';
 import 'package:lib_utils/config/sp_service.dart';
 import 'package:lib_utils/loggers.dart';
@@ -93,6 +94,9 @@ class ServerSideConfiguration {
   }
 
   Future<void> init() async {
+    // 获取本地的发现页显示配置和黑名单
+    _getDiscoverConfig();
+
     _requestFuture = CommonApi.prerequisiteConfig(onSuccess: (config) {
       walletIsOpen = config.walletBean;
       payIsOpen = config.leBean;
