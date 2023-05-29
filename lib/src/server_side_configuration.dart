@@ -33,6 +33,16 @@ class ServerSideConfiguration {
   int maxNotiCountInBg = 5;
   int currentNotiCountInBg = 0;
 
+  /// -none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
+  /// - 注：guild_id逻辑的优先级高于abtestBucketName，如果guild_id不等于0，那么abtestBucketName会返回空字符串
+  String abtestBucketName = 'normal';
+
+  /// - 发现tab是否可见
+  RxBool isDiscoverTabVisible = false.obs;
+
+  /// - 发现页功能用户黑名单,如果有值，则为黑名单服务器，发现页展示黑名单服务器的圈子内容
+  RxString inGuildBlack = ''.obs;
+
   double singleMaxMoney = 20000; // 发送单个红包最大金额
   int maxNum = 2000; // 拼手气红包最多分成这么多份
   int period = 24 * 60 * 60; // 默认的红包过期时间24小时，服务器配置，单位为秒
@@ -114,5 +124,35 @@ class ServerSideConfiguration {
     if (exception != null) {
       debugPrint("初始化服务端配置失败，将使用客户端默认配置。原因： $exception");
     }
+  }
+
+  /// - 写死的测试数据  获取本地的发现页显示配置和黑名单
+  void _getDiscoverConfig() {
+    isDiscoverTabVisible.value =
+        SpService.instance.getBool(SP.isDiscoverTabVisible) ?? true;
+    inGuildBlack.value = SpService.instance.getString(SP.inGuildBlack) ?? '';
+  }
+
+  /// - 更新保存到本地存储
+  void getPersonalSetting() {
+    CommonApi.getPersonalCommonSetting(onSuccess: (_settings) {
+      final int inGuildBlackGuildId = _settings['guild_id'] as int? ?? 0;
+      // abtest的字符串
+      abtestBucketName = _settings['bucket_name'] ?? 'none';
+      // 没有命中黑名单逻辑或者是虽然命中但是同时在白名单中为0，否则为服务器id信息
+      inGuildBlack.value =
+          inGuildBlackGuildId != 0 ? inGuildBlackGuildId.toString() : '';
+
+      // 显不显示发现页入口
+      //  none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
+      //  注：guild_id逻辑的优先级高于abtestBucketName，如果guild_id不等于0，那么abtestBucketName会返回空字符串
+      isDiscoverTabVisible.value =
+          !(inGuildBlack.value.isEmpty && abtestBucketName == 'none');
+
+      // 更新本地数据
+      SpService.instance
+          .setBool(SP.isDiscoverTabVisible, isDiscoverTabVisible.value);
+      SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
+    });
   }
 }
