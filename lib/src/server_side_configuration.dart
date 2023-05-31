@@ -36,7 +36,7 @@ class ServerSideConfiguration {
 
   /// -none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
   /// - 注：guild_id逻辑的优先级高于abtestBucketName，如果guild_id不等于0，那么abtestBucketName会返回空字符串
-  String abtestBucketName = 'normal';
+  RxString abtestBucketName = 'normal'.obs;
 
   /// - 发现tab是否可见
   RxBool isDiscoverTabVisible = false.obs;
@@ -140,9 +140,11 @@ class ServerSideConfiguration {
   /// - 更新保存到本地存储
   void getPersonalSetting() {
     CommonApi.getPersonalCommonSetting(onSuccess: (_settings) {
+      // 黑名单服务器id
       final int inGuildBlackGuildId = _settings['guild_id'] as int? ?? 0;
       // abtest的字符串
-      abtestBucketName = _settings['bucket_name'] ?? 'none';
+      final bucketName = _settings['bucket_name'] ?? 'none';
+
       // 没有命中黑名单逻辑或者是虽然命中但是同时在白名单中为0，否则为服务器id信息
       inGuildBlack.value =
           inGuildBlackGuildId != 0 ? inGuildBlackGuildId.toString() : '';
@@ -151,7 +153,13 @@ class ServerSideConfiguration {
       //  none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
       //  注：guild_id逻辑的优先级高于abtestBucketName，如果guild_id不等于0，那么abtestBucketName会返回空字符串
       isDiscoverTabVisible.value =
-          !(inGuildBlack.value.isEmpty && abtestBucketName == 'none');
+          !(inGuildBlack.value.isEmpty && bucketName == 'none');
+
+      // 有变化才更新
+      if (abtestBucketName.value != bucketName) {
+        // 通知相关接口进行重新获取数据
+        abtestBucketName.value = bucketName;
+      }
 
       // 更新本地数据
       SpService.instance
