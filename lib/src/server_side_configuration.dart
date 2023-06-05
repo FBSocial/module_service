@@ -167,4 +167,14 @@ class ServerSideConfiguration {
       SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
     });
   }
+
+  /// 退出登录将abtest的恢复成默认
+  void setAbtestDefault() {
+    abtestBucketName.value = 'normal';
+    inGuildBlack.value = '';
+    isDiscoverTabVisible.value = false;
+    SpService.instance
+        .setBool(SP.isDiscoverTabVisible, isDiscoverTabVisible.value);
+    SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
+  }
 }
