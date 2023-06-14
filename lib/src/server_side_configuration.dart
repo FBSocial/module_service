@@ -36,7 +36,7 @@ class ServerSideConfiguration {
 
   /// -none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
   /// - 注：guild_id逻辑的优先级高于abtestBucketName，如果guild_id不等于0，那么abtestBucketName会返回空字符串
-  RxString abtestBucketName = 'normal'.obs;
+  RxString abtestBucketName = ''.obs;
 
   /// - 发现tab是否可见
   RxBool isDiscoverTabVisible = false.obs;
@@ -134,6 +134,7 @@ class ServerSideConfiguration {
   void _getDiscoverConfig() {
     isDiscoverTabVisible.value =
         SpService.instance.getBool(SP.isDiscoverTabVisible) ?? true;
+    abtestBucketName.value = SpService.instance.getString(SP.bucketName) ?? '';
     inGuildBlack.value = SpService.instance.getString(SP.inGuildBlack) ?? '';
   }
 
@@ -143,7 +144,7 @@ class ServerSideConfiguration {
       // 黑名单服务器id
       final int inGuildBlackGuildId = _settings['guild_id'] as int? ?? 0;
       // abtest的字符串
-      final bucketName = _settings['bucket_name'] ?? 'none';
+      final String bucketName = _settings['bucket_name'] ?? 'none';
 
       // 没有命中黑名单逻辑或者是虽然命中但是同时在白名单中为0，否则为服务器id信息
       inGuildBlack.value =
@@ -160,21 +161,30 @@ class ServerSideConfiguration {
         // 通知相关接口进行重新获取数据
         abtestBucketName.value = bucketName;
       }
+      if (bucketName.isEmpty) {
+        // 如果为空，采用兜底策略
+        abtestBucketName.value = 'normal';
+      }
 
       // 更新本地数据
       SpService.instance
           .setBool(SP.isDiscoverTabVisible, isDiscoverTabVisible.value);
+      SpService.instance.setString(SP.bucketName, abtestBucketName.value);
       SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
+    }, onFail: (errCode, errMsg) {
+      // 接口失败，采用兜底策略，让用户获取normal桶中的数据
+      abtestBucketName.value = 'normal';
     });
   }
 
   /// 退出登录将abtest的恢复成默认
   void setAbtestDefault() {
-    abtestBucketName.value = 'normal';
+    abtestBucketName.value = '';
     inGuildBlack.value = '';
     isDiscoverTabVisible.value = false;
     SpService.instance
         .setBool(SP.isDiscoverTabVisible, isDiscoverTabVisible.value);
+    SpService.instance.setString(SP.bucketName, abtestBucketName.value);
     SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
   }
 }
