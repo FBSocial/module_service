@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:lib_net/lib_net.dart';
 import 'package:lib_utils/config/sp_service.dart';
 import 'package:lib_utils/loggers.dart';
+import 'package:lib_utils/config/config.dart';
 
 class ServerSideConfiguration {
   static ServerSideConfiguration instance = ServerSideConfiguration._();
@@ -83,6 +84,14 @@ class ServerSideConfiguration {
         _settingsCompleter!.complete(_settings);
         settings = _settings;
         SpService.instance.setInt(SP.videoMax, _settings.videoMax);
+        //  处理灰度数据
+        //  - 服务器白名单数据
+        Config.permissionFlag =
+            settings.grey?["permission_enable"] as int? ?? -1;
+        Config.permissionGuild =
+            (settings.grey?["permission_guild"] as List? ?? [])
+                .map((e) => e.toString())
+                .toList();
       },
       onFail: (code, message) {
         logger.severe('getCommonSetting fail: $code $message');
