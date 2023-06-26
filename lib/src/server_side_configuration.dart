@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:lib_net/lib_net.dart';
+import 'package:lib_utils/config/config.dart';
 import 'package:lib_utils/config/sp_service.dart';
 import 'package:lib_utils/loggers.dart';
-import 'package:lib_utils/config/config.dart';
 
 class ServerSideConfiguration {
   static ServerSideConfiguration instance = ServerSideConfiguration._();
@@ -85,13 +85,14 @@ class ServerSideConfiguration {
         settings = _settings;
         SpService.instance.setInt(SP.videoMax, _settings.videoMax);
         //  处理灰度数据
-        //  - 服务器白名单数据
+        //  - 是否开启服务器白名单
         Config.permissionFlag =
             settings.grey?["permission_enable"] as int? ?? -1;
+        //  - 处理服务器白名单数据
+        final whiteGuildList =
+            settings.grey?["permission_guild"] as Map<String, dynamic>? ?? {};
         Config.permissionGuild =
-            (settings.grey?["permission_guild"] as List? ?? [])
-                .map((e) => e.toString())
-                .toList();
+            whiteGuildList.values.map((e) => e.toString()).toList();
       },
       onFail: (code, message) {
         logger.severe('getCommonSetting fail: $code $message');
