@@ -85,10 +85,10 @@ class ServerSideConfiguration {
         settings = _settings;
         SpService.instance.setInt(SP.videoMax, _settings.videoMax);
         //  处理灰度数据
-        //  - 是否开启服务器白名单
+        //  - 是否启用服务器白名单
         Config.permissionFlag =
             settings.grey?["permission_enable"] as int? ?? -1;
-        //  - 处理服务器白名单数据
+        //  - 初始化白名单数据
         final whiteGuildList =
             settings.grey?["permission_guild"] as Map<String, dynamic>? ?? {};
         Config.permissionGuild =
