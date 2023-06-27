@@ -87,10 +87,10 @@ class ServerSideConfiguration {
         //  处理灰度数据
         //  - 是否启用服务器白名单
         Config.permissionFlag =
-            settings.grey?["permission_enable"] as int? ?? -1;
+            settings.grey["permission_enable"] as int? ?? -1;
         //  - 初始化白名单数据
         final whiteGuildList =
-            settings.grey?["permission_guild"] as Map<String, dynamic>? ?? {};
+            settings.grey["permission_guild"] as Map<String, dynamic>? ?? {};
         Config.permissionGuild =
             whiteGuildList.values.map((e) => e.toString()).toList();
       },
