@@ -89,10 +89,10 @@ class ServerSideConfiguration {
         Config.permissionFlag =
             settings.grey["permission_enable"] as int? ?? -1;
         //  - 初始化白名单数据
-        final whiteGuildList =
-            settings.grey["permission_guild"] as Map<String, dynamic>? ?? {};
         Config.permissionGuild =
-            whiteGuildList.values.map((e) => e.toString()).toList();
+            (settings.grey["permission_guild"] as List? ?? [])
+                .map((e) => e.toString())
+                .toList();
       },
       onFail: (code, message) {
         logger.severe('getCommonSetting fail: $code $message');
