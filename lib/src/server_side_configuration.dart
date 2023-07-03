@@ -93,6 +93,9 @@ class ServerSideConfiguration {
             (settings.grey["permission_guild"] as List? ?? [])
                 .map((e) => e.toString())
                 .toList();
+        Config.memberListVersion = _settings.memberListVersion ?? 2;
+        SpService.instance
+            .setInt(SP.memberListVersion, _settings.memberListVersion ?? 2);
       },
       onFail: (code, message) {
         logger.severe('getCommonSetting fail: $code $message');
