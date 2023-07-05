@@ -48,11 +48,11 @@ class EventChannelFeatured {
 }
 
 ///圈子子频道信息修改时同步信息
-class EventCircleModify {
+class EventCircleChannelModify {
   final String guildId;
   final String? channelId;
 
-  const EventCircleModify(this.guildId, this.channelId);
+  const EventCircleChannelModify(this.guildId, this.channelId);
 }
 
 // IM 消息相关是事件
@@ -148,5 +148,12 @@ class EventService<MessageType> {
     return _stream.stream
         .where((e) => e is EventChannelFeatured && e.guildId == guildId)
         .cast<EventChannelFeatured>();
+  }
+
+  ///圈子子频道信息修改的变化
+  Stream<EventCircleChannelModify> onCircleChannelChange(String guildId) {
+    return _stream.stream
+        .where((e) => e is EventCircleChannelModify && e.guildId == guildId)
+        .cast<EventCircleChannelModify>();
   }
 }
