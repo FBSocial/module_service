@@ -47,6 +47,14 @@ class EventChannelFeatured {
   const EventChannelFeatured(this.guildId, this.channelId);
 }
 
+///圈子子频道信息修改时同步信息
+class EventCircleModify {
+  final String guildId;
+  final String? channelId;
+
+  const EventCircleModify(this.guildId, this.channelId);
+}
+
 // IM 消息相关是事件
 /// IM 产生了一条非实体消息，参见 [MessageType.isNonentity]
 @immutable
