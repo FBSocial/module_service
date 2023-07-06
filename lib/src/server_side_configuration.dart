@@ -84,9 +84,9 @@ class ServerSideConfiguration {
         _settingsCompleter!.complete(_settings);
         settings = _settings;
         SpService.instance.setInt(SP.videoMax, _settings.videoMax);
-        Config.memberListVersion = _settings.memberListVersion ?? 2;
+        Config.memberListVersion = _settings.memberListVersion ?? 1;
         SpService.instance
-            .setInt(SP.memberListVersion, _settings.memberListVersion ?? 2);
+            .setInt(SP.memberListVersion, _settings.memberListVersion ?? 1);
       },
       onFail: (code, message) {
         logger.severe('getCommonSetting fail: $code $message');
