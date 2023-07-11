@@ -22,9 +22,16 @@ class EventChannelExited {
 
 /// 退出指定服务器时触发（被移除时）
 class EventGuildExited {
-  final String? guildId;
+  final String guildId;
 
   const EventGuildExited(this.guildId);
+}
+
+/// 进入指定服务器时触发
+class EventGuildEntered {
+  final String guildId;
+
+  const EventGuildEntered(this.guildId);
 }
 
 /// 聊天消息被撤回
@@ -80,6 +87,8 @@ class EventService<MessageType> {
 
   final _stream = StreamController.broadcast();
 
+  Stream get stream => _stream.stream;
+
   EventService._();
 
   @visibleForTesting
@@ -120,10 +129,16 @@ class EventService<MessageType> {
         .cast<EventChannelExited>();
   }
 
-  Stream<EventGuildExited> onGuildExited(String? guildId) {
+  Stream<EventGuildExited> onGuildExited(String guildId) {
     return _stream.stream
         .where((e) => e is EventGuildExited && e.guildId == guildId)
         .cast<EventGuildExited>();
+  }
+
+  Stream<EventGuildEntered> onGuildEntered(String guildId) {
+    return _stream.stream
+        .where((e) => e is EventGuildEntered && e.guildId == guildId)
+        .cast<EventGuildEntered>();
   }
 
   /// IM 消息失效时触发，如果不指定 [channelId] 则监听所有消息的失效
