@@ -186,8 +186,8 @@ class ServerSideConfiguration {
     abtestBucketName.value = '';
     inGuildBlack.value = '';
     isDiscoverTabVisible.value = false;
-    SpService.instance
-        .setBool(SP.isDiscoverTabVisible, isDiscoverTabVisible.value);
+    // 默认是可以看到的
+    SpService.instance.setBool(SP.isDiscoverTabVisible, true);
     SpService.instance.setString(SP.bucketName, abtestBucketName.value);
     SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
   }
