@@ -27,7 +27,11 @@ dev_dependencies:
 dependency_overrides:
   analyzer: ^1.7.1
   sqflite: ^2.2.7
-  image_picker: ^0.8.8
+  image_picker:
+    git:
+      url: https://github.com/FBSocial/packages.git
+      path: packages/image_picker/image_picker/
+      ref: image_picker_fix_1.0.1
   flutter_quill: ^5.3.2
   json_serializable: ^6.6.1
 # For information on the generic Dart part of this file, see the
