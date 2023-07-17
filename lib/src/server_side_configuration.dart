@@ -39,9 +39,6 @@ class ServerSideConfiguration {
   /// - 注：guild_id逻辑的优先级高于abtestBucketName，如果guild_id不等于0，那么abtestBucketName会返回空字符串
   RxString abtestBucketName = ''.obs;
 
-  /// - 发现tab是否可见
-  RxBool isDiscoverTabVisible = false.obs;
-
   /// - 发现页功能用户黑名单,如果有值，则为黑名单服务器，发现页展示黑名单服务器的圈子内容
   RxString inGuildBlack = ''.obs;
 
@@ -136,8 +133,6 @@ class ServerSideConfiguration {
 
   /// - 写死的测试数据  获取本地的发现页显示配置和黑名单
   void _getDiscoverConfig() {
-    isDiscoverTabVisible.value =
-        SpService.instance.getBool(SP.isDiscoverTabVisible) ?? true;
     abtestBucketName.value = SpService.instance.getString(SP.bucketName) ?? '';
     inGuildBlack.value = SpService.instance.getString(SP.inGuildBlack) ?? '';
   }
@@ -148,7 +143,7 @@ class ServerSideConfiguration {
       // 黑名单服务器id
       final int inGuildBlackGuildId = _settings['guild_id'] as int? ?? 0;
       // abtest的字符串
-      final String bucketName = _settings['bucket_name'] ?? 'none';
+      final String bucketName = _settings['bucket_name'] ?? 'normal';
 
       // 没有命中黑名单逻辑或者是虽然命中但是同时在白名单中为0，否则为服务器id信息
       inGuildBlack.value =
@@ -157,8 +152,6 @@ class ServerSideConfiguration {
       // 显不显示发现页入口
       //  none 无信息流入口  recommend 火山推荐  hot 按fanbook热度推荐 normal 85%的正常流量数据
       //  注：guild_id逻辑的优先级高于abtestBucketName，如果guild_id不等于0，那么abtestBucketName会返回空字符串
-      isDiscoverTabVisible.value =
-          !(inGuildBlack.value.isEmpty && bucketName == 'none');
 
       // 有变化才更新
       if (abtestBucketName.value != bucketName) {
@@ -171,8 +164,6 @@ class ServerSideConfiguration {
       }
 
       // 更新本地数据
-      SpService.instance
-          .setBool(SP.isDiscoverTabVisible, isDiscoverTabVisible.value);
       SpService.instance.setString(SP.bucketName, abtestBucketName.value);
       SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
     }, onFail: (errCode, errMsg) {
@@ -185,9 +176,6 @@ class ServerSideConfiguration {
   void setAbtestDefault() {
     abtestBucketName.value = '';
     inGuildBlack.value = '';
-    isDiscoverTabVisible.value = false;
-    // 默认是可以看到的
-    SpService.instance.setBool(SP.isDiscoverTabVisible, true);
     SpService.instance.setString(SP.bucketName, abtestBucketName.value);
     SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
   }
