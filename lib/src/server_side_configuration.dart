@@ -131,9 +131,10 @@ class ServerSideConfiguration {
     }
   }
 
-  /// - 写死的测试数据  获取本地的发现页显示配置和黑名单
+  /// - 获取本地的发现页显示配置和黑名单
   void _getDiscoverConfig() {
-    abtestBucketName.value = SpService.instance.getString(SP.bucketName) ?? '';
+    abtestBucketName.value =
+        SpService.instance.getString(SP.bucketName) ?? 'normal';
     inGuildBlack.value = SpService.instance.getString(SP.inGuildBlack) ?? '';
   }
 
@@ -174,7 +175,7 @@ class ServerSideConfiguration {
 
   /// 退出登录将abtest的恢复成默认
   void setAbtestDefault() {
-    abtestBucketName.value = '';
+    abtestBucketName.value = 'normal';
     inGuildBlack.value = '';
     SpService.instance.setString(SP.bucketName, abtestBucketName.value);
     SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
