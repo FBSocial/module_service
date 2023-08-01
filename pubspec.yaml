@@ -30,6 +30,7 @@ dependency_overrides:
   async: ^2.10.0
   analyzer: ^1.7.1
   sqflite: ^2.2.7
+  audio_video_progress_bar: ^1.0.1
   image_picker:
     git:
       url: https://github.com/FBSocial/packages.git
