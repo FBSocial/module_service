@@ -180,4 +180,11 @@ class ServerSideConfiguration {
     SpService.instance.setString(SP.bucketName, abtestBucketName.value);
     SpService.instance.setString(SP.inGuildBlack, inGuildBlack.value);
   }
+
+  /// 动态上热门是否使用彩虹规则；圈子列表加载是否使用彩虹规则（AB test）
+  bool isCircleUseCaiHongHot(String guildId) {
+    return settings.abtestHotCircle == 2 ||
+        (settings.abtestHotCircle == 1 &&
+            settings.abtestGuilds.contains(guildId));
+  }
 }
