@@ -85,7 +85,7 @@ class ServerSideConfiguration {
         Config.memberListVersion = _settings.memberListVersion ?? 1;
         SpService.instance
             .setInt(SP.memberListVersion, _settings.memberListVersion ?? 1);
-        //  缓存AI舆情屏蔽言论
+        //  缓存AI舆情屏蔽文案
         if (_settings.aiBanTips?.isNotEmpty ?? false) {
           Global.shieldContentMsgs = _settings.aiBanTips!.split("\n");
         }
