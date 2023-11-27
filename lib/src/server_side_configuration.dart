@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:lib_entity/global.dart';
 import 'package:lib_net/lib_net.dart';
 import 'package:lib_utils/config/config.dart';
 import 'package:lib_utils/config/sp_service.dart';
@@ -84,6 +85,10 @@ class ServerSideConfiguration {
         Config.memberListVersion = _settings.memberListVersion ?? 1;
         SpService.instance
             .setInt(SP.memberListVersion, _settings.memberListVersion ?? 1);
+        //  缓存AI舆情屏蔽言论
+        if (_settings.aiBanTips?.isNotEmpty ?? false) {
+          Global.shieldContentMsgs = _settings.aiBanTips!.split("\n");
+        }
       },
       onFail: (code, message) {
         logger.severe('getCommonSetting fail: $code $message');
