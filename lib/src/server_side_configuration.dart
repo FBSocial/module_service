@@ -80,6 +80,11 @@ class ServerSideConfiguration {
     CommonApi.getCommonSetting(
       onSuccess: (_settings) {
         _settingsCompleter!.complete(_settings);
+        if (_settings.shareHostSetting != null) {
+          Global.shareHost = _settings.shareHostSetting?.host;
+          Global.cardHosts = _settings.shareHostSetting?.cardHosts ?? {};
+          logger.info('------- init shareHost ok.');
+        }
         settings = _settings;
         SpService.instance.setInt(SP.videoMax, _settings.videoMax);
         Config.memberListVersion = _settings.memberListVersion ?? 1;
@@ -191,5 +196,17 @@ class ServerSideConfiguration {
     return settings.abtestHotCircle == 2 ||
         (settings.abtestHotCircle == 1 &&
             settings.abtestGuilds.contains(guildId));
+  }
+
+  /// 获取新是分享host(有值则采用新host的创建统一格式的分享链接)
+  String getShareHost() {
+    final ShareHostSetting? shareHostSetting = settings.shareHostSetting;
+    return shareHostSetting?.host ?? '';
+  }
+
+  /// 新的分享卡片解析host(用于匹配分享链接成卡片类型的消息)
+  Set<String> getCardHosts() {
+    final ShareHostSetting? shareHostSetting = settings.shareHostSetting;
+    return shareHostSetting?.cardHosts ?? {};
   }
 }
