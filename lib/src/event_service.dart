@@ -39,12 +39,14 @@ class EventMessageInvalided {
   final String messageId;
   final String? operator;
   final String channelId;
+  final List<String>? displayRoleId;
 
   const EventMessageInvalided(
     this.channelId,
     this.messageId,
-    this.operator,
-  );
+    this.operator, {
+    this.displayRoleId,
+  });
 }
 
 class EventChannelFeatured {
@@ -78,8 +80,16 @@ class EventMessageRecalled extends EventMessageInvalided {
 }
 
 class EventMessageDeleted extends EventMessageInvalided {
-  const EventMessageDeleted(String channelId, String messageId)
-      : super(channelId, messageId, null);
+  const EventMessageDeleted(
+    String channelId,
+    String messageId, {
+    List<String>? displayRoleId,
+  }) : super(
+          channelId,
+          messageId,
+          null,
+          displayRoleId: displayRoleId,
+        );
 }
 
 class EventService<MessageType> {
