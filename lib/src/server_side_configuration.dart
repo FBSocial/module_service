@@ -92,7 +92,7 @@ class ServerSideConfiguration {
             .setInt(SP.memberListVersion, _settings.memberListVersion ?? 1);
         //  缓存AI舆情屏蔽文案
         if (_settings.aiBanTips?.isNotEmpty ?? false) {
-          Global.shieldContentMsgs = _settings.aiBanTips!.split("\n");
+          Global.shieldContentMsgs = _settings.aiBanTips!.split(";");
         }
       },
       onFail: (code, message) {
