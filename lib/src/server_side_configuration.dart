@@ -8,6 +8,7 @@ import 'package:lib_net/lib_net.dart';
 import 'package:lib_utils/config/config.dart';
 import 'package:lib_utils/config/sp_service.dart';
 import 'package:lib_utils/loggers.dart';
+import 'package:lib_utils/universal_platform.dart';
 
 class ServerSideConfiguration {
   static ServerSideConfiguration instance = ServerSideConfiguration._();
@@ -20,7 +21,8 @@ class ServerSideConfiguration {
 
   /// 是否显示第三方登录入口
   ValueNotifier<bool> appleLoginOpen = ValueNotifier(false); //苹果登录 默认关
-  ValueNotifier<bool> wechatLoginOpen = ValueNotifier(false); //微信登录 默认关
+  ValueNotifier<bool> wechatLoginOpen =
+      ValueNotifier(UniversalPlatform.isAndroid); //微信登录 android 默认开 - iOS 默认关
 
   /// APP后台通知部分
   bool serverEnableNotiInBg = true;
