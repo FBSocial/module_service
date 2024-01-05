@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:lib_entity/global.dart';
 import 'package:lib_net/lib_net.dart';
-import 'package:lib_utils/config/config.dart';
 import 'package:lib_utils/config/sp_service.dart';
 import 'package:lib_utils/loggers.dart';
 import 'package:lib_utils/universal_platform.dart';
@@ -69,9 +68,6 @@ class ServerSideConfiguration {
         }
         settings = _settings;
         SpService.instance.setInt(SP.videoMax, _settings.videoMax);
-        Config.memberListVersion = _settings.memberListVersion ?? 1;
-        SpService.instance
-            .setInt(SP.memberListVersion, _settings.memberListVersion ?? 1);
         //  缓存AI舆情屏蔽文案
         if (_settings.aiBanTips?.isNotEmpty ?? false) {
           Global.shieldContentMsgs = _settings.aiBanTips!.split(";");
