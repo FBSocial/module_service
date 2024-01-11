@@ -39,7 +39,7 @@ dependency_overrides:
   flutter_quill:
     git:
       url: https://github.com/FBSocial/fb_flutter_quill.git
-      ref: 6.3.5+13
+      ref: 6.3.5+14
   json_serializable: ^6.6.1
   device_info_plus: ^4.0.0
 # For information on the generic Dart part of this file, see the
