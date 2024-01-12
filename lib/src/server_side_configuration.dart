@@ -66,6 +66,9 @@ class ServerSideConfiguration {
           Global.cardHosts = _settings.shareHostSetting?.cardHosts ?? {};
           logger.info('------- init shareHost ok.');
         }
+        if (_settings.circleConfig != null) {
+          Global.postTagLimit = _settings.circleConfig?.postTagLimit ?? 0;
+        }
         settings = _settings;
         SpService.instance.setInt(SP.videoMax, _settings.videoMax);
         //  缓存AI舆情屏蔽文案
