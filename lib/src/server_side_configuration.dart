@@ -68,6 +68,7 @@ class ServerSideConfiguration {
         }
         if (_settings.circleConfig != null) {
           Global.postTagLimit = _settings.circleConfig?.postTagLimit ?? 0;
+          Global.postAtLimit = _settings.circleConfig?.postAtLimit ?? 0;
         }
         settings = _settings;
         SpService.instance.setInt(SP.videoMax, _settings.videoMax);
