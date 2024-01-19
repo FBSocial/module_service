@@ -181,4 +181,18 @@ class EventService<MessageType> {
         .where((e) => e is EventCircleChannelModify && e.guildId == guildId)
         .cast<EventCircleChannelModify>();
   }
+
+  Stream<EventCircleLike> onCircleLike() {
+    return _stream.stream
+        .where((e) => e is EventCircleLike)
+        .cast<EventCircleLike>();
+  }
+}
+
+/// 圈子点赞或取消点赞
+class EventCircleLike {
+  final String userId;
+  final bool liked;
+
+  const EventCircleLike(this.userId, this.liked);
 }
