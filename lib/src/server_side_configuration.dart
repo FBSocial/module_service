@@ -77,6 +77,7 @@ class ServerSideConfiguration {
             error.type != DioErrorType.response).toOptions();
 
     _settingsCompleter = Completer();
+    CommonApi.getWhiteBotList(onSuccess: (list) => Global.botWhiteList = list);
     CommonApi.getCommonSetting(
       onSuccess: (_settings) {
         _settingsCompleter!.complete(_settings);
